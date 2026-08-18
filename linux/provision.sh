@@ -44,10 +44,16 @@ if [[ ! -x /usr/local/cargo/bin/rustc ]]; then
   curl -fsSL https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --no-modify-path
   chmod -R a+rX /usr/local/rustup /usr/local/cargo
 fi
+# Always refresh stable — deps drift (jsonwebtoken/time/icu needed 1.88 while runners sat on 1.85.1; SBAI cloud #901/#902).
+# Directory overrides can beat `rustup default`; CI should also set RUSTUP_TOOLCHAIN=stable.
+log "rustup update stable..."
+/usr/local/cargo/bin/rustup update stable || true
+/usr/local/cargo/bin/rustup default stable || true
 ln -sfn /usr/local/cargo/bin/rustc /usr/local/bin/rustc
 ln -sfn /usr/local/cargo/bin/cargo /usr/local/bin/cargo
 ln -sfn /usr/local/cargo/bin/rustup /usr/local/bin/rustup
 echo 'export PATH=/usr/local/cargo/bin:$PATH' > /etc/profile.d/rust.sh
+echo 'export RUSTUP_TOOLCHAIN=stable' >> /etc/profile.d/rust.sh
 
 # protoc
 if ! command -v protoc >/dev/null; then

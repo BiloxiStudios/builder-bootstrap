@@ -7,7 +7,7 @@ Pin **latest stable** unless a workflow explicitly pins older (owner rule). Re-r
 | Component | Notes |
 |-----------|--------|
 | Git | system `safe.directory *` on Windows (NETWORK SERVICE) |
-| Rust stable | Windows: `x86_64-pc-windows-msvc` under service-readable `C:\cargo` or Dev Drive |
+| Rust stable | Windows: `x86_64-pc-windows-msvc` under service-readable `C:\cargo` or Dev Drive. **Always `rustup update stable` on provision** — runners that only bootstrap when rustup is *absent* sat on 1.85.1 while crates needed 1.88 (cloud PRs #901/#902: set `RUSTUP_TOOLCHAIN=stable` in CI too; directory overrides can beat `rustup default`). |
 | Node 20 LTS | desktop workflows; Create Release / wrangler may need Node **22+** on Windows release hosts |
 | CMake | Tauri / native |
 | **protoc** | `arduino/setup-protoc` needs `unzip` on Linux; prefer preinstalling both |
