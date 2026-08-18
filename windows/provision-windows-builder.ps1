@@ -62,7 +62,13 @@ setx CARGO_HOME $cargoHome /M | Out-Null
 $env:CARGO_HOME = $cargoHome
 
 # --- 2. Toolchain -----------------------------------------------------------------
-function Winget($id){ winget install --id $id -e --silent --accept-package-agreements --accept-source-agreements 2>&1 | Out-Null }
+function Winget($id){
+  if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
+    Log "winget missing — skip $id (install App Installer / use MSI fallbacks for cmake+protoc+gh)"
+    return
+  }
+  winget install --id $id -e --silent --accept-package-agreements --accept-source-agreements 2>&1 | Out-Null
+}
 Log "Installing VS2022 BuildTools (C++ workload)..."
 Winget 'Microsoft.VisualStudio.2022.BuildTools'
 # Ensure the C++ + Windows SDK components (winget installs the shell; add workload):
