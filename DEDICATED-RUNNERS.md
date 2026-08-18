@@ -56,6 +56,14 @@ runs-on: [self-hosted, linux, build-cf-worker]
 Add the exclusive label to the proven runner **before** changing `runs-on`. Then drop the shared
 `proxmox` label so random jobs stop landing there.
 
+## Inventory + scripts
+
+- **[RUNNERS.md](RUNNERS.md)** — live table (GH ids, exclusive labels, host map)
+- `scripts/list-runners.sh` — dump org runners (`GH_ADMIN_PAT`)
+- `scripts/apply-dedicated-labels.py` — re-apply exclusive labels (idempotent)
+
+Labels were applied 2026-08-18 on the BiloxiStudios org (enterprise `grae` has 0 self-hosted). Existing labels were **kept** so current `runs-on` still work; pin workflows to exclusive labels next.
+
 ## Ticket
 
-SBAI-7412 (dedicated runner fleet).
+SBAI-7416 (dedicated runner fleet).
