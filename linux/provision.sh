@@ -46,7 +46,13 @@ export PATH="/usr/local/sbin:/usr/local/bin:${CARGO_HOME}/bin:/usr/sbin:/usr/bin
 if [[ ! -x /usr/local/cargo/bin/rustc ]]; then
   log "installing rustup..."
   curl -fsSL https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --no-modify-path
-  chmod -R a+rX /usr/local/rustup /usr/local/cargo
+  mkdir -p /usr/local/rustup/tmp
+  if id runner >/dev/null 2>&1; then
+    chown -R runner:runner /usr/local/rustup /usr/local/cargo
+  else
+    chmod -R a+rX /usr/local/rustup /usr/local/cargo
+    chmod -R a+rwx /usr/local/rustup/tmp
+  fi
 fi
 # Always refresh stable — deps drift (jsonwebtoken/time/icu needed 1.88 while runners sat on 1.85.1; SBAI cloud #901/#902).
 # Directory overrides can beat `rustup default`; CI should also set RUSTUP_TOOLCHAIN=stable.

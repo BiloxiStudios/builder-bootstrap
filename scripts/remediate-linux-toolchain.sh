@@ -65,9 +65,16 @@ fi
 if [[ -x /usr/local/cargo/bin/rustup ]] && [[ ! -d /usr/local/rustup/toolchains/stable-x86_64-unknown-linux-gnu ]]; then
   /usr/local/cargo/bin/rustup default stable || /usr/local/cargo/bin/rustup toolchain install stable
 fi
-# chmod so runner user can read toolchains
-if [[ -d /usr/local/rustup ]]; then chmod -R a+rX /usr/local/rustup || true; fi
-if [[ -d /usr/local/cargo ]]; then chmod -R a+rX /usr/local/cargo || true; fi
+# rustup proxy writes /usr/local/rustup/tmp. a+rX is not enough — first
+# mm-linux-1 job died Permission denied (bake was root-owned). Chown to
+# the GH runner user when it exists; otherwise world-writable tmp.
+mkdir -p /usr/local/rustup/tmp /usr/local/cargo
+if id runner >/dev/null 2>&1; then
+  chown -R runner:runner /usr/local/rustup /usr/local/cargo
+else
+  chmod -R a+rX /usr/local/rustup /usr/local/cargo || true
+  chmod -R a+rwx /usr/local/rustup/tmp || true
+fi
 
 # --- symlinks on BOTH /usr/local/bin AND /usr/bin (pct + GH service PATH) ---
 link() {
