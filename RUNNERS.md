@@ -19,8 +19,8 @@ Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still m
 
 | GH id | Name | Status | Exclusive | Host / notes |
 |------:|------|--------|-----------|--------------|
-| 36 | bx-w11-build02 | online idle | **build-desktop-windows** + rust-msvc + **build-mm-win** | HYDRA 10.15.1.117 — preferred desktop; 24G/8c, C: 17G free (below MM 35G floor) |
-| 37 | bl-w11-build01 | online idle | **build-desktop-windows** + rust-msvc + **build-mm-win** | 10.15.1.137 standby; 16G/8c, C: 22G free (below MM 35G floor) |
+| 36 | bx-w11-build02 | online idle | **build-desktop-windows** + rust-msvc + **build-mm-win** | HYDRA 10.15.1.117 — preferred desktop; 24G/8c, C: 256G / **159G free** (VHDX 256G on HYDRA) |
+| 37 | bl-w11-build01 | online idle | **build-desktop-windows** + rust-msvc + **build-mm-win** | 10.15.1.137 standby; 16G/8c, C: 256G / **165G free** (VHDX 256G on BRANDON-LAP) |
 | 42 | CC-W11-BUILD01 | online idle | **build-desktop-windows** + rust-msvc | Cloudcroft |
 | 41 | DOMOVOI | online idle | **build-test-windows** | Physical 10.15.1.129, 8GB — not desktop |
 | 39 | WIN-G10JLRFN20E | **online** (restarted 2026-08-18; interactive task) | **build-e2e** | Host 10.15.0.78; interactive scheduled task (not a Windows service) |
