@@ -30,6 +30,7 @@ is actually exhausted.
 | `build-cf-worker` | rustc/wasm wrangler deploys | dedicated LXC, rustc ≥1.88 (`RUSTUP_TOOLCHAIN=stable`) | not the desktop linker |
 | `build-e2e` | Playwright / docker / GUI | **bx-w11-e2e01** on WIN-G10 (`10.15.0.78`) | isolation from cargo link |
 | `build-macos` | Tauri mac | existing macOS VMs / GH-hosted | GUI session caveats |
+| `mm` | model-manager (keep `avx2` / `rust-msvc`) | **mm-linux-1** pve3 CT166; Win: bx/bl rust-msvc | Linux: 32G+swap+AVX2, not CT159. Win: rust-msvc, no `proxmox` |
 
 **Do not** give `build-desktop-linux` and `build-e2e` to the same CT. Docker + LTO link on one 32G
 box is how CT159 hung.

@@ -34,6 +34,9 @@ Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still m
 | 24 | proxmox-linux-4 | online | **build-cf-worker** | pve1 CT148 (android label) |
 | 28 | proxmox-macos-2 | online idle | **build-macos** | pve macOS |
 | 34 | cc-linux-1 | **online** (disk-full crashloop 2026-08-18; pruned + restarted; 899M free — still tight) | **build-cf-worker** | Cloudcroft ESXi esx1 `10.44.0.106` |
+| 45 | mm-linux-1 | **online** | **mm** + avx2 | pve3 CT166 `10.15.1.130` 16c/32G/16Gswap/200G — MM Linux PR/compile |
+| 36 | bx-w11-build02 | online | **build-desktop-windows** + rust-msvc + **mm** | HYDRA 10.15.1.117 — 24G/8c, C: 17G free (below MM 35G floor) |
+| 37 | bl-w11-build01 | online | **build-desktop-windows** + rust-msvc + **mm** | 10.15.1.137 — 16G/8c, C: 22G free (below MM 35G floor) |
 
 ## Hostname collisions / stale (do not register)
 
