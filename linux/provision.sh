@@ -13,7 +13,7 @@ log "apt base packages..."
 apt-get update -qq
 apt-get install -y -qq \
   curl ca-certificates git build-essential pkg-config \
-  cmake unzip zip \
+  cmake unzip zip xz-utils \
   libssl-dev libwebkit2gtk-4.1-dev libgtk-3-dev \
   libayatana-appindicator3-dev librsvg2-dev patchelf \
   openssh-server jq
@@ -36,9 +36,13 @@ if ! command -v gh >/dev/null; then
   apt-get update -qq && apt-get install -y -qq gh
 fi
 
-# Rust (system-wide under /usr/local/cargo for service accounts)
+# pct exec / GH runner services often have PATH=/usr/bin:/bin only.
+# rustc is a rustup proxy and MUST see RUSTUP_HOME or it re-downloads into $HOME/.rustup.
 export RUSTUP_HOME=/usr/local/rustup
 export CARGO_HOME=/usr/local/cargo
+export PATH="/usr/local/sbin:/usr/local/bin:${CARGO_HOME}/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+# Rust (system-wide under /usr/local/cargo for service accounts)
 if [[ ! -x /usr/local/cargo/bin/rustc ]]; then
   log "installing rustup..."
   curl -fsSL https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --no-modify-path
@@ -49,19 +53,62 @@ fi
 log "rustup update stable..."
 /usr/local/cargo/bin/rustup update stable || true
 /usr/local/cargo/bin/rustup default stable || true
-ln -sfn /usr/local/cargo/bin/rustc /usr/local/bin/rustc
-ln -sfn /usr/local/cargo/bin/cargo /usr/local/bin/cargo
-ln -sfn /usr/local/cargo/bin/rustup /usr/local/bin/rustup
-echo 'export PATH=/usr/local/cargo/bin:$PATH' > /etc/profile.d/rust.sh
-echo 'export RUSTUP_TOOLCHAIN=stable' >> /etc/profile.d/rust.sh
+# Wrappers (not bare rustup-proxy symlinks): GH runner services ignore
+# /etc/environment until restart. rustc without RUSTUP_HOME re-downloads.
+install_rust_wrap() {
+  local name=$1 src=/usr/local/cargo/bin/$1
+  [[ -e "$src" ]] || return 0
+  for wrap in /usr/local/bin/$name /usr/bin/$name; do
+    rm -f "$wrap"
+    cat > "$wrap" <<EOF
+#!/bin/sh
+export RUSTUP_HOME=/usr/local/rustup
+export CARGO_HOME=/usr/local/cargo
+export RUSTUP_TOOLCHAIN="\${RUSTUP_TOOLCHAIN:-stable}"
+exec $src "\$@"
+EOF
+    chmod 755 "$wrap"
+  done
+}
+install_rust_wrap rustc
+install_rust_wrap cargo
+install_rust_wrap rustup
+cat > /etc/profile.d/sb-builder.sh <<'EOF'
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/local/cargo/bin:$PATH"
+export RUSTUP_HOME=/usr/local/rustup
+export CARGO_HOME=/usr/local/cargo
+export RUSTUP_TOOLCHAIN=stable
+EOF
 
-# protoc
+# protoc — pin; do not query GH API (unauth 60/hr shared NAT)
+PROTOC_PIN="${PROTOC_PIN:-29.3}"
 if ! command -v protoc >/dev/null; then
-  log "installing protoc..."
-  PROTOC_VERSION="$(curl -fsSL https://api.github.com/repos/protocolbuffers/protobuf/releases/latest | jq -r .tag_name | sed 's/^v//')"
-  curl -fsSL -o /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip"
+  log "installing protoc ${PROTOC_PIN}..."
+  curl -fsSL -o /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_PIN}/protoc-${PROTOC_PIN}-linux-x86_64.zip"
   unzip -qo /tmp/protoc.zip -d /usr/local
   rm -f /tmp/protoc.zip
+fi
+ln -sfn /usr/local/bin/protoc /usr/bin/protoc 2>/dev/null || true
+
+# Node 20 + 22 side-by-side (wrangler ≥22). Default `node` stays existing or becomes 20.
+install_node() {
+  local ver=$1 dest=$2
+  if [[ -x "$dest/bin/node" ]]; then return 0; fi
+  log "installing node ${ver} -> ${dest}"
+  mkdir -p "$dest"
+  curl -fsSL "https://nodejs.org/dist/v${ver}/node-v${ver}-linux-x64.tar.xz" -o "/tmp/node${ver}.txz"
+  tar -xJf "/tmp/node${ver}.txz" -C "$dest" --strip-components=1
+  rm -f "/tmp/node${ver}.txz"
+}
+install_node 20.19.4 /usr/local/node20
+install_node 22.18.0 /usr/local/node22
+ln -sfn /usr/local/node20/bin/node /usr/local/bin/node20
+ln -sfn /usr/local/node22/bin/node /usr/local/bin/node22
+ln -sfn /usr/local/node20/bin/node /usr/bin/node20
+ln -sfn /usr/local/node22/bin/node /usr/bin/node22
+if ! command -v node >/dev/null; then
+  ln -sfn /usr/local/node20/bin/node /usr/local/bin/node
+  ln -sfn /usr/local/node20/bin/npm  /usr/local/bin/npm
 fi
 
 systemctl enable --now ssh 2>/dev/null || systemctl enable --now sshd 2>/dev/null || true

@@ -26,8 +26,8 @@ Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still m
 | 39 | WIN-G10JLRFN20E | **online** (restarted 2026-08-18; interactive task) | **build-e2e** | Host 10.15.0.78; interactive scheduled task (not a Windows service) |
 | 43 | proxmox-linux-7 | online | **build-desktop-linux** | pve2 CT164 |
 | 44 | proxmox-linux-8 | online | **build-desktop-linux** | pve2 CT163 |
-| 32 | actions-linux-5 | online | **build-e2e-linux** | pve3 CT158 |
-| 33 | actions-linux-6 | online | **build-e2e-linux** | pve3 CT159 (32G; swap zvol staged) |
+| 32 | actions-linux-5 | online | **build-e2e-linux** | pve3 CT158 (PVE virtual swap 8G ACTIVE; 16G zvol staged — needs CT restart to bind `/dev/swapzvol`) |
+| 33 | actions-linux-6 | online | **build-e2e-linux** | pve3 CT159 (32G; PVE virtual swap 8G ACTIVE; 16G zvol staged — needs CT restart to bind `/dev/swapzvol`) |
 | 29 | proxmox-linux-1 | online | **build-cf-worker** | pve1 CT145 (hostname still actions-linux-1) |
 | 22 | proxmox-linux-2 | online | **build-cf-worker** | pve1 CT146 |
 | 23 | proxmox-linux-3 | online | **build-cf-worker** | pve1 CT147 |
@@ -49,7 +49,11 @@ Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still m
 |--------|---------|
 | `scripts/list-runners.sh` | dump org runners (needs admin PAT in `GH_TOKEN` or `GH_ADMIN_PAT`) |
 | `scripts/apply-dedicated-labels.py` | idempotent POST of exclusive labels |
-| `linux/provision.sh` | toolchain (incl. rustup update + unzip) |
+| `linux/provision.sh` | toolchain (incl. rustup update + unzip + node20/22 + rustc wrappers) |
+| `scripts/remediate-linux-toolchain.sh` | guest remediator: PATH/`RUSTUP_HOME` wrappers, `/usr/bin` links, runner `.env` |
+| `scripts/push-remediate.sh` | BRAINZ → pve1/2/3 `pct push` + exec remediator |
+| `scripts/verify-linux-runner.sh` | in-guest gate (exports RUSTUP_HOME; swap must be ACTIVE) |
+| `scripts/audit-linux-runners.sh` | host-side fleet audit |
 | `windows/provision-windows-builder.ps1` | Windows toolchain |
 
 ## Prerequisites per class

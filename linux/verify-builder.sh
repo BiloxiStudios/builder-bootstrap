@@ -7,7 +7,9 @@ check(){
   if "$@"; then echo "  [ OK ] $name"; else echo "  [FAIL] $name"; fail=$((fail+1)); fi
 }
 echo "== StudioBrain Linux builder verification =="
-export PATH="/usr/local/cargo/bin:/usr/local/bin:$PATH"
+export RUSTUP_HOME="${RUSTUP_HOME:-/usr/local/rustup}"
+export CARGO_HOME="${CARGO_HOME:-/usr/local/cargo}"
+export PATH="/usr/local/sbin:/usr/local/bin:${CARGO_HOME}/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH"
 
 check 'git' command -v git >/dev/null
 check 'unzip' command -v unzip >/dev/null
