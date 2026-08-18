@@ -23,7 +23,7 @@ Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still m
 | 37 | bl-w11-build01 | online idle | **build-desktop-windows** | 10.15.1.137 standby |
 | 42 | CC-W11-BUILD01 | online idle | **build-desktop-windows** + rust-msvc | Cloudcroft |
 | 41 | DOMOVOI | online idle | **build-test-windows** | Physical 10.15.1.129, 8GB — not desktop |
-| 39 | WIN-G10JLRFN20E | **offline** | **build-e2e** | Host 10.15.0.78; VM `bx-w11-e2e01` 8c/16G (guest IP empty) |
+| 39 | WIN-G10JLRFN20E | **online** (restarted 2026-08-18; interactive task) | **build-e2e** | Host 10.15.0.78; interactive scheduled task (not a Windows service) |
 | 43 | proxmox-linux-7 | online | **build-desktop-linux** | pve2 CT164 |
 | 44 | proxmox-linux-8 | online | **build-desktop-linux** | pve2 CT163 |
 | 32 | actions-linux-5 | online | **build-e2e-linux** | pve3 CT158 |
