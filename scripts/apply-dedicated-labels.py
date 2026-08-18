@@ -15,8 +15,8 @@ ORG = "BiloxiStudios"
 
 # runner_id -> exclusive labels to ADD
 PLAN: dict[int, list[str]] = {
-    36: ["build-desktop-windows", "mm"],  # bx-w11-build02 — rust-msvc kept
-    37: ["build-desktop-windows", "mm"],  # bl-w11-build01 — rust-msvc kept
+    36: ["build-desktop-windows", "mm", "build-mm-win"],  # bx-w11-build02 — rust-msvc kept
+    37: ["build-desktop-windows", "mm", "build-mm-win"],  # bl-w11-build01 — rust-msvc kept
     42: ["build-desktop-windows", "rust-msvc"],  # CC-W11-BUILD01
     41: ["build-test-windows"],  # DOMOVOI
     39: ["build-e2e"],  # WIN-G10JLRFN20E
@@ -30,6 +30,7 @@ PLAN: dict[int, list[str]] = {
     24: ["build-cf-worker"],  # proxmox-linux-4
     28: ["build-macos"],  # proxmox-macos-2
     34: ["build-cf-worker"],  # cc-linux-1
+    45: ["build-mm", "mm"],  # mm-linux-1 — keep Linux,X64,avx2
 }
 
 
