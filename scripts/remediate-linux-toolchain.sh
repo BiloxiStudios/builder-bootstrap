@@ -25,6 +25,11 @@ need_bin() {
 need_bin unzip unzip
 need_bin xz xz-utils
 need_bin curl curl
+# CI (MM) also checks the apt package, not just /usr/bin/protoc from the official zip.
+if ! dpkg -s protobuf-compiler >/dev/null 2>&1; then
+  apt-get update -qq
+  apt-get install -y -qq protobuf-compiler
+fi
 
 # --- protoc (pinned; never hit GH API — unauth 60/hr shared NAT) ---
 if ! command -v protoc >/dev/null 2>&1 && [[ ! -x /usr/local/bin/protoc ]]; then

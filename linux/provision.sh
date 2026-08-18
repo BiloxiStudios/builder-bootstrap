@@ -13,7 +13,7 @@ log "apt base packages..."
 apt-get update -qq
 apt-get install -y -qq \
   curl ca-certificates git build-essential pkg-config \
-  cmake unzip zip xz-utils \
+  cmake unzip zip xz-utils protobuf-compiler \
   libssl-dev libwebkit2gtk-4.1-dev libgtk-3-dev \
   libayatana-appindicator3-dev librsvg2-dev patchelf \
   openssh-server jq
