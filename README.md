@@ -90,7 +90,18 @@ common/TOOLCHAIN.md              # version pins / rationale
 - Desktop builds: `sb-desktop`
 - Do **not** commit PATs or MAK keys. Pass at runtime from Vaultwarden.
 
+## Canonical locations
+
+| Copy | Path |
+|------|------|
+| **NAS Studio Skills (owner-canonical)** | `B:\Brains\Skills\BuilderBootstrap\` → `/mnt/tank/Studio/Brains/Skills/BuilderBootstrap/` |
+| GitHub (SimpleHelp `curl`/`irm`) | https://github.com/BiloxiStudios/builder-bootstrap |
+| Index | `B:\Brains\_Skills\SKILLS_INDEX.md` |
+
+Keep NAS and GitHub in sync when editing.
+
 ## Related
 
-- Skill: `windows-build-deploy` (Claude/Grok skill mirror of Windows scripts)
+- Skill: `WindowsBuildDeploy` (Windows deep runbook)
 - Topology: `studio-infra-topology` §2.4b runner fleet table
+- Ticket: SBAI-7406
