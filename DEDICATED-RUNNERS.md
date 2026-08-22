@@ -26,11 +26,12 @@ is actually exhausted.
 | Label | Job class | Proven host (2026-08-18) | Needs |
 |-------|-----------|--------------------------|--------|
 | `build-desktop-windows` | Tauri/NSIS Windows | **bx-w11-build02** (HYDRA) | rust-msvc, unzip n/a |
-| `build-desktop-linux` | Tauri linux-cpu | **proxmox-linux-7/8** (pve2) or CT159 after swap | 32G+ RAM **and real swap**, rust, unzip, protoc |
+| `build-desktop-linux` | Tauri linux-cpu | **proxmox-linux-7/8** (pve2/vm2, CT164/CT163) | 32G+ RAM **and real swap**, rust, unzip, protoc |
 | `build-cf-worker` | rustc/wasm wrangler deploys | dedicated LXC, rustc ≥1.88 (`RUSTUP_TOOLCHAIN=stable`) | not the desktop linker |
 | `build-e2e` | Playwright / docker / GUI | **bx-w11-e2e01** on WIN-G10 (`10.15.0.78`) | isolation from cargo link |
+| `build-e2e-linux` | docker/browsers linux | **actions-linux-5/6** (pve3/vm3, CT158/CT159) — 16G swap re-verified active 2026-08-22 | 32G+ RAM **and real swap** |
 | `build-macos` | Tauri mac | existing macOS VMs / GH-hosted | GUI session caveats |
-| `mm` | model-manager (keep `avx2` / `rust-msvc`) | **mm-linux-1** pve3 CT166; Win: bx/bl rust-msvc | Linux: 32G+swap+AVX2, not CT159. Win: rust-msvc, no `proxmox` |
+| `mm` | model-manager (keep `avx2` / `rust-msvc`) | **mm-linux-1** pve3 CT166; Win: bx/bl rust-msvc | Linux: 32G+swap+AVX2, not CT158/159. Win: rust-msvc, no `proxmox` |
 
 **Do not** give `build-desktop-linux` and `build-e2e` to the same CT. Docker + LTO link on one 32G
 box is how CT159 hung.
@@ -67,4 +68,6 @@ Labels were applied 2026-08-18 on the BiloxiStudios org (enterprise `grae` has 0
 
 ## Ticket
 
-SBAI-7416 (dedicated runner fleet).
+SBAI-7416 (dedicated runner fleet). SBAI-7498 (2026-08-22): resolved vm1/vm3 duplicate Proxmox CT
+names (CT154/CT157 renamed off `actions-linux-5/6`), re-verified CT159 guest swap active, confirmed
+`build-desktop-linux` (pve2) and `build-e2e-linux` (pve3) are on separate nodes. See RUNNERS.md.
