@@ -26,7 +26,7 @@ uname_s="$(uname -s)"
 if [[ -n "$OS_OVERRIDE" ]]; then
   os="$OS_OVERRIDE"
 elif [[ "$uname_s" == Darwin ]]; then
-  os=mac
+  os=macos
 else
   os=linux
 fi
