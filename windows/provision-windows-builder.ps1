@@ -64,7 +64,7 @@ $env:CARGO_HOME = $cargoHome
 # --- 2. Toolchain -----------------------------------------------------------------
 function Winget($id){
   if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-    Log "winget missing — skip $id (install App Installer / use MSI fallbacks for cmake+protoc+gh)"
+    Log "winget missing - skip $id (install App Installer / use MSI fallbacks for cmake+protoc+gh)"
     return
   }
   winget install --id $id -e --silent --accept-package-agreements --accept-source-agreements 2>&1 | Out-Null
@@ -103,7 +103,7 @@ git config --system --add safe.directory '*' 2>$null
 # protoc: PROVISION-ONCE here (not per-build) so the CI workflow's install step no-ops
 # on fleet runners. The winget package doesn't reliably land protoc.exe on PATH, so install
 # the official release to a stable dir + persist it on the machine PATH — robust for clones.
-Log "Installing protoc (official release → stable PATH)..."
+Log "Installing protoc (official release -> stable PATH)..."
 $env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')
 if (-not (Get-Command protoc -ErrorAction SilentlyContinue)) {
   $protocDir = 'C:\tools\protoc'
@@ -150,7 +150,7 @@ if ($MakKey) {
   cscript //nologo "$env:SystemRoot\System32\slmgr.vbs" /ipk $MakKey | Out-Null
   cscript //nologo "$env:SystemRoot\System32\slmgr.vbs" /ato | Out-Null
   $lic = (cscript //nologo "$env:SystemRoot\System32\slmgr.vbs" /dli) -join ' '
-  $status = if ($lic -match 'Licensed') { 'Licensed' } else { 'NOT licensed — verify slmgr /dli' }
+  $status = if ($lic -match 'Licensed') { 'Licensed' } else { 'NOT licensed - verify slmgr /dli' }
   Log "Activation status: $status"
 }
 
