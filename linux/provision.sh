@@ -87,14 +87,19 @@ export RUSTUP_TOOLCHAIN=stable
 EOF
 
 # protoc — pin; do not query GH API (unauth 60/hr shared NAT)
+# NOTE: guard on the PINNED install path, not `command -v protoc` — apt's
+# protobuf-compiler package satisfies `command -v protoc` on most base images,
+# which used to skip this block entirely while the unconditional symlink below
+# still ran, clobbering the working apt binary with a dangling symlink to a
+# /usr/local/bin/protoc that was never created (SBAI-7502).
 PROTOC_PIN="${PROTOC_PIN:-29.3}"
-if ! command -v protoc >/dev/null; then
+if [[ ! -x /usr/local/bin/protoc ]]; then
   log "installing protoc ${PROTOC_PIN}..."
   curl -fsSL -o /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_PIN}/protoc-${PROTOC_PIN}-linux-x86_64.zip"
   unzip -qo /tmp/protoc.zip -d /usr/local
   rm -f /tmp/protoc.zip
 fi
-ln -sfn /usr/local/bin/protoc /usr/bin/protoc 2>/dev/null || true
+ln -sfn /usr/local/bin/protoc /usr/bin/protoc
 
 # Node 20 + 22 side-by-side (wrangler ≥22). Default `node` stays existing or becomes 20.
 install_node() {
