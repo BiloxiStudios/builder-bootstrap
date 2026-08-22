@@ -42,7 +42,11 @@ try {
     # Low-RAM physical boxes (DOMOVOI ~8GB): prefer C:\cargo over Dev Drive create failures
     & "$work\provision-windows-builder.ps1" @provArgs
   }
-  & "$work\verify-builder.ps1" -RunnerRoot (if (Test-Path 'E:\actions-runner') { 'E:\actions-runner' } else { 'C:\actions-runner' })
+  # NOTE: must be $(...) (subexpression), not bare (...) — after the & call operator,
+  # PowerShell 5.1 parses arguments in "argument mode" where a bare (if ...) tries to
+  # invoke `if` as a command name (CommandNotFoundException) instead of evaluating it
+  # as an expression. Confirmed live on BL-W11-BUILD01 (SBAI-7502).
+  & "$work\verify-builder.ps1" -RunnerRoot $(if (Test-Path 'E:\actions-runner') { 'E:\actions-runner' } else { 'C:\actions-runner' })
   Write-Host @"
 
 [bootstrap] Toolchain verify finished.
