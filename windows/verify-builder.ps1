@@ -29,7 +29,7 @@ if ($env:GH_TOKEN -or $env:GITHUB_TOKEN) {
   $probe = & gh api user --jq .login 2>$null
   Check 'gh authenticated probe' (-not [string]::IsNullOrWhiteSpace($probe)) $probe
 } else {
-  Write-Host '  [SKIP] gh authenticated probe (no GH_TOKEN in env — job will inject)' -ForegroundColor DarkGray
+  Write-Host '  [SKIP] gh authenticated probe (no GH_TOKEN in env - job will inject)' -ForegroundColor DarkGray
 }
 
 Check 'nvcc (CUDA)' ((Get-Command nvcc -ErrorAction SilentlyContinue) -ne $null) '(skip if CPU-only box)'
@@ -87,5 +87,5 @@ try {
   Check 'scratch cargo build' ($LASTEXITCODE -eq 0) ($(if($LASTEXITCODE -ne 0){"`n$out"}))
 } finally { Remove-Item $scratch -Recurse -Force -ErrorAction SilentlyContinue }
 
-Write-Host ("== {0} ==" -f $(if($fail -eq 0){'ALL CHECKS PASSED — snapshot this VM as the golden image'}else{"$fail CHECK(S) FAILED"})) -ForegroundColor $(if($fail -eq 0){'Green'}else{'Red'})
+Write-Host ("== {0} ==" -f $(if($fail -eq 0){'ALL CHECKS PASSED - snapshot this VM as the golden image'}else{"$fail CHECK(S) FAILED"})) -ForegroundColor $(if($fail -eq 0){'Green'}else{'Red'})
 exit $fail
