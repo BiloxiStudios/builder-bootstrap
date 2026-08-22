@@ -2,18 +2,21 @@
 # verify-builder.sh — macOS StudioBrain builder gate
 set -euo pipefail
 fail=0
-check(){ local n="$1"; shift; if "$@"; then echo "  [ OK ] $n"; else echo "  [FAIL] $n"; fail=$((fail+1)); fi; }
+# NOTE: redirect the inner probe's own stdout here, not at the call site
+# (`check 'x' cmd >/dev/null` redirects check()'s own [OK]/[FAIL] echo too,
+# which silently hid every per-tool diagnostic line — SBAI-7502).
+check(){ local n="$1"; shift; if "$@" >/dev/null 2>&1; then echo "  [ OK ] $n"; else echo "  [FAIL] $n"; fail=$((fail+1)); fi; }
 echo "== StudioBrain macOS builder verification =="
 export PATH="$HOME/.cargo/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
 
-check 'git' command -v git >/dev/null
-check 'cmake' command -v cmake >/dev/null
-check 'protoc' command -v protoc >/dev/null
-check 'node' command -v node >/dev/null
-check 'gh' command -v gh >/dev/null
-check 'rustc' command -v rustc >/dev/null
-check 'cargo' command -v cargo >/dev/null
-check 'xcode-select' xcode-select -p >/dev/null
+check 'git' command -v git
+check 'cmake' command -v cmake
+check 'protoc' command -v protoc
+check 'node' command -v node
+check 'gh' command -v gh
+check 'rustc' command -v rustc
+check 'cargo' command -v cargo
+check 'xcode-select' xcode-select -p
 
 scratch="$(mktemp -d /tmp/sbverify.XXXXXX)"
 if cargo new "$scratch/app" --bin >/dev/null 2>&1 && (cd "$scratch/app" && cargo build >/dev/null 2>&1); then
