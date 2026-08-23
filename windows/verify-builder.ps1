@@ -12,7 +12,17 @@ Write-Host "== StudioBrain Windows builder verification ==" -ForegroundColor Cya
 # toolchain
 Check 'rustc'  ((& rustc --version 2>$null) -ne $null) (& rustc --version 2>$null)
 Check 'cargo'  ((& cargo --version 2>$null) -ne $null) (& cargo --version 2>$null)
-Check 'cl.exe (MSVC)' ((Get-Command cl.exe -ErrorAction SilentlyContinue) -ne $null)
+# MSVC is NOT required on PATH: rustc/the `cc` crate auto-locate the VC toolset via
+# vswhere/registry (find-msvc-tools) for every windows-msvc build, PATH or no PATH —
+# this is why GH-hosted runners work with cl.exe absent from PATH too. Checking
+# `Get-Command cl.exe` tests the wrong invariant and false-fails healthy boxes
+# (verified 2026-08-23, SBAI-7725: bx-w11-build02, the passing production
+# desktop-build box, also has no cl.exe on PATH). Check toolset *installation*
+# here; the scratch build below proves it actually compiles C via the same
+# autodetection path esaxx-rs/aws-lc-sys use in production.
+$vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+$vsInstall = if (Test-Path $vswhere) { & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath 2>$null } else { $null }
+Check 'VC Tools MSVC toolset installed' (-not [string]::IsNullOrWhiteSpace($vsInstall)) $vsInstall
 Check 'cmake'  ((Get-Command cmake -ErrorAction SilentlyContinue) -ne $null)
 Check 'protoc' ((Get-Command protoc -ErrorAction SilentlyContinue) -ne $null)
 Check 'git'    ((Get-Command git -ErrorAction SilentlyContinue) -ne $null)
@@ -76,15 +86,21 @@ $tdPath = if ($tdCmd) { $tdCmd.Source } elseif (Test-Path 'C:\cargo\bin\tauri-dr
 $tdHelp = if ($tdPath) { & $tdPath --help 2>&1 | Select-Object -First 1 } else { $null }
 Check 'tauri-driver present' ($null -ne $tdPath -and "$tdHelp" -match 'tauri-driver|USAGE') $tdPath
 
-# THE invariant: a real cargo build with no NUL corruption
-Write-Host "  ... scratch cargo build (proves no crate-extraction corruption) ..." -ForegroundColor DarkGray
+# THE invariant: a real cargo build with no NUL corruption, PLUS a real MSVC cl.exe
+# invocation through the `cc` crate's own autodetection (same path esaxx-rs /
+# aws-lc-sys take in production desktop builds) — proves the toolset actually
+# works end-to-end without depending on PATH placement.
+Write-Host "  ... scratch cargo build incl. cc-crate C compile (proves no crate-extraction corruption + real MSVC compile) ..." -ForegroundColor DarkGray
 $scratch = Join-Path $env:TEMP ("sbverify_" + [guid]::NewGuid().ToString('N'))
 try {
   & cargo new $scratch --bin 2>&1 | Out-Null
+  Set-Content -Path (Join-Path $scratch 'dummy.c') -Value 'int sb_verify_probe(void){return 42;}'
+  Add-Content -Path (Join-Path $scratch 'Cargo.toml') -Value "`n[build-dependencies]`ncc = `"1`""
+  Set-Content -Path (Join-Path $scratch 'build.rs') -Value 'fn main(){ cc::Build::new().file("dummy.c").compile("sb_verify_probe"); }'
   Push-Location $scratch
   $out = & cargo build 2>&1
   Pop-Location
-  Check 'scratch cargo build' ($LASTEXITCODE -eq 0) ($(if($LASTEXITCODE -ne 0){"`n$out"}))
+  Check 'scratch cargo build (cc-crate MSVC compile)' ($LASTEXITCODE -eq 0) ($(if($LASTEXITCODE -ne 0){"`n$out"}))
 } finally { Remove-Item $scratch -Recurse -Force -ErrorAction SilentlyContinue }
 
 Write-Host ("== {0} ==" -f $(if($fail -eq 0){'ALL CHECKS PASSED - snapshot this VM as the golden image'}else{"$fail CHECK(S) FAILED"})) -ForegroundColor $(if($fail -eq 0){'Green'}else{'Red'})
