@@ -43,7 +43,7 @@ export CARGO_HOME=/usr/local/cargo
 export PATH="/usr/local/sbin:/usr/local/bin:${CARGO_HOME}/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 # Rust (system-wide under /usr/local/cargo for service accounts)
-if [[ ! -x /usr/local/cargo/bin/rustc ]]; then
+if [[ ! -x /usr/local/cargo/bin/rustup ]]; then
   log "installing rustup..."
   curl -fsSL https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --no-modify-path
   mkdir -p /usr/local/rustup/tmp
@@ -78,7 +78,18 @@ EOF
 }
 install_rust_wrap rustc
 install_rust_wrap cargo
-install_rust_wrap rustup
+install_rustup_link() {
+  local root=${RUSTUP_LAYOUT_ROOT:-}
+  local src="${root}/usr/local/cargo/bin/rustup"
+  local link
+  for link in "${root}/usr/local/bin/rustup" "${root}/usr/bin/rustup"; do
+    rm -f "$link"
+    if [[ -x "$src" ]]; then
+      ln -s "$src" "$link"
+    fi
+  done
+}
+install_rustup_link
 cat > /etc/profile.d/sb-builder.sh <<'EOF'
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/local/cargo/bin:$PATH"
 export RUSTUP_HOME=/usr/local/rustup

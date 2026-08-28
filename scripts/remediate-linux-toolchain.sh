@@ -83,7 +83,7 @@ link() {
   ln -sfn "$src" "$dest"
 }
 link /usr/local/bin/protoc              /usr/bin/protoc
-# rustc/cargo/rustup MUST export RUSTUP_HOME — GH runner services
+# rustc/cargo MUST export RUSTUP_HOME — GH runner services
 # do not pick up /etc/environment until restart, and rustc is a rustup
 # proxy that otherwise re-downloads into $HOME/.rustup.
 install_rust_wrap() {
@@ -107,7 +107,18 @@ EOF
 }
 install_rust_wrap rustc
 install_rust_wrap cargo
-install_rust_wrap rustup
+install_rustup_link() {
+  local root=${RUSTUP_LAYOUT_ROOT:-}
+  local src="${root}/usr/local/cargo/bin/rustup"
+  local link
+  for link in "${root}/usr/local/bin/rustup" "${root}/usr/bin/rustup"; do
+    rm -f "$link"
+    if [[ -x "$src" ]]; then
+      ln -s "$src" "$link"
+    fi
+  done
+}
+install_rustup_link
 link /usr/local/node20/bin/node         /usr/local/bin/node20
 link /usr/local/node22/bin/node         /usr/local/bin/node22
 link /usr/local/node20/bin/npm          /usr/local/bin/npm20
