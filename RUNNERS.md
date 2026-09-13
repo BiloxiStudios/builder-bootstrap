@@ -24,8 +24,8 @@ Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still m
 | 42 | CC-W11-BUILD01 | online idle | **build-desktop-windows** + rust-msvc | Cloudcroft |
 | 41 | DOMOVOI | online idle | **build-test-windows** | Physical 10.15.1.129, 8GB — not desktop |
 | 39 | WIN-G10JLRFN20E | **online** (restarted 2026-08-18; interactive task) | **build-e2e** | Host 10.15.0.78; interactive scheduled task (not a Windows service) |
-| 43 | proxmox-linux-7 | online | **build-desktop-linux** | pve2 CT164 |
-| 44 | proxmox-linux-8 | online | **build-desktop-linux** | pve2 CT163 |
+| 43 | proxmox-linux-7 | online | **build-desktop-linux** | pve3 CT164 (SBAI-10516 audit, 2026-09-13: physically on pve3, not pve2) |
+| 44 | proxmox-linux-8 | online | **build-desktop-linux** | pve3 CT163 (SBAI-10516 audit, 2026-09-13: physically on pve3, not pve2) |
 | 32 | actions-linux-5 | online | **build-e2e-linux** | pve3(vm3) CT158 (guest `free`/`swapon --show`/`/proc/swaps` re-verified 2026-08-22: Swap=**16G active**, 1.8M used; 16G zvol `vm-ssd/swap-ct158` is host backing) |
 | 33 | actions-linux-6 | online | **build-e2e-linux** | pve3(vm3) CT159 (32G RAM; guest `free`/`swapon --show`/`/proc/swaps` re-verified 2026-08-22: Swap=**16G active**, 1.8M used; 16G zvol `vm-ssd/swap-ct159` is host backing) |
 | 29 | proxmox-linux-1 | online | **build-cf-worker** | pve1 CT145 (hostname still actions-linux-1) |
@@ -36,11 +36,15 @@ Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still m
 | 34 | cc-linux-1 | **online** (disk-full crashloop 2026-08-18; pruned + restarted; 899M free — still tight) | **build-cf-worker** | Cloudcroft ESXi esx1 `10.44.0.106` |
 | 45 | mm-linux-1 | **online** | **build-mm** + avx2 + Linux,X64 | pve3 CT166 `10.15.1.130` 16c/32G/16Gswap/200G 197G free — MM Linux cargo |
 
-**Workload separation proof (SBAI-7498, 2026-08-22):** `build-desktop-linux` (GH 43/44) lives on
-**pve2/vm2** CT163/CT164; `build-e2e-linux` (GH 32/33) lives on **pve3/vm3** CT158/CT159 — different
-Proxmox nodes entirely, confirmed via `pvesh get /cluster/resources --type vm`. Before/after org
+**Workload separation proof (SBAI-7498, 2026-08-22):** `build-desktop-linux` (GH 43/44) and
+`build-e2e-linux` (GH 32/33) both live on **pve3/vm3** — CT163/CT164 and CT158/CT159 respectively —
+confirmed via `pvesh get /cluster/resources --type vm`. Before/after org
 roster diff (`scripts/list-runners.sh`, 2026-08-22 01:17Z → 01:2xZ) shows zero identity churn from
 the CT154/CT157 rename below — neither stale CT was ever in the org roster.
+**Correction (SBAI-10516 audit, 2026-09-13):** this doc previously said CT163/CT164 were on pve2 —
+they are physically on pve3 (confirmed live via `pvesh`); the original "different Proxmox nodes
+entirely" separation claim was wrong on the node, though the workload/CT separation itself still
+holds (both pairs are on pve3, just not on different nodes from each other).
 
 ## Hostname collisions / stale — RESOLVED 2026-08-22 (SBAI-7498)
 
