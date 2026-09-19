@@ -56,10 +56,32 @@ GH runners (GH id 32/33) and were **not** touched.
 | CT | Old name (pre-fix) | New name | Reality |
 |----|---------------------|----------|---------|
 | vm1 CT154 | actions-linux-5 | **brainmon-proxmox-2** | Live repo-scoped runner (agentId 22, `BizaNator/BrainMon`) — active `Runner.Listener` process, untouched by rename, verified same PID before/after |
-| vm1 CT157 | actions-linux-6 | **retired-ct157** | Fully stale: former repo-scoped runner `proxmox-linux-6` (`BiloxiStudios/studiobrain-cloud`) migrated away; no `.runner` file, no systemd unit, no process. Renamed only — container not destroyed pending owner confirmation to reclaim/delete |
+| vm1 CT157 | actions-linux-6 | **retired-ct157** | **SUPERSEDED — DO NOT DESTROY. See the SBAI-10938 correction below.** True as of 2026-08-22: former repo-scoped runner `proxmox-linux-6` (`BiloxiStudios/studiobrain-cloud`) had migrated away; no `.runner` file, no systemd unit, no process. Since re-purposed as a **live** BrainMon runner — the `retired-ct157` name is now misleading |
 | vm3 CT158 | actions-linux-5 | *(unchanged)* | Real GH id 32, org roster, `build-e2e-linux` |
 | vm3 CT159 | actions-linux-6 | *(unchanged)* | Real GH id 33, org roster, `build-e2e-linux` |
 | pve2 CT165 | actions-linux-mm1 | *(unchanged)* | **repo-scoped** `studiobrain-model-manager` (not org list) — out of scope for this pass |
+
+**Correction (SBAI-10938 audit, 2026-09-19): CT157 is LIVE — do not destroy it.** The CT157 row
+above was accurate when written on 2026-08-22, but the container was re-purposed for BrainMon CI
+between 2026-08-27 and 2026-09-03 and the row was never updated. Measured read-only on pve1
+(2026-09-19), all three of its "fully stale" claims are now false:
+
+| Row claimed (2026-08-22) | Measured on pve1 (2026-09-19) |
+|---|---|
+| no `.runner` file | `/opt/actions-runner/.runner` present — agentId **23**, agentName **`brainmon-proxmox-3`**, gitHubUrl `https://github.com/BizaNator/BrainMon` |
+| no systemd unit | `actions.runner.BizaNator-BrainMon.brainmon-proxmox-3.service` — enabled, running, heartbeating |
+| no process | active runner process; sibling of CT154 (`brainmon-proxmox-2`, agentId 22) |
+
+So CT157 is the repo-scoped BrainMon runner `brainmon-proxmox-3`, not a decommission leftover.
+**Stopping or deleting it is a BrainMon CI outage.** The `retired-ct157` container name is itself
+stale and is the second half of the same trap — the name and this doc were two independent sources
+agreeing on something false.
+
+The container rename to `brainmon-proxmox-3` and the ~55G `fstrim` reclaim (the rootfs sits at
+99.69% pool-allocated vs 22G actually used) are tracked as owner-executed work in **SBAI-10938**;
+this correction is deliberately doc-only and does not depend on that decision. Note the
+"neither stale CT was ever in the org roster" line above still holds as a statement about the
+**org** roster — CT157 is *repo*-scoped, so it was never expected there.
 
 ## Scripts
 
