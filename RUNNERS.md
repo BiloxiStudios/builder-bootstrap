@@ -32,7 +32,8 @@ Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still m
 | 22 | proxmox-linux-2 | online | **build-cf-worker** | pve1 CT146 |
 | 23 | proxmox-linux-3 | online | **build-cf-worker** | pve1 CT147 |
 | 24 | proxmox-linux-4 | online | **build-cf-worker** | pve1 CT148 (android label) |
-| 28 | proxmox-macos-2 | online idle | **build-macos** | pve macOS |
+| 27 | proxmox-macos-1 | not in 2026-08-18 re-list (online status not re-verified) | not audited | pve2 VM 220 (macos-sonoma) — agentId 27 per `.runner` check 2026-10-23 |
+| 28 | proxmox-macos-2 | online idle | **build-macos** | pve3 VM 222 (macos-sonoma-build, `10.15.1.154`, MAC `BC:24:11:65:DC:AC`) — agentId 28 per `.runner` check 2026-10-23; **not** pve2 VM 220 (that is proxmox-macos-1, id 27) |
 | 34 | cc-linux-1 | **online** (disk-full crashloop 2026-08-18; pruned + restarted; 899M free — still tight) | **build-cf-worker** | Cloudcroft ESXi esx1 `10.44.0.106` |
 | 45 | mm-linux-1 | **online** | **build-mm** + avx2 + Linux,X64 | pve3 CT166 `10.15.1.130` 16c/32G/16Gswap/200G 197G free — MM Linux cargo |
 
