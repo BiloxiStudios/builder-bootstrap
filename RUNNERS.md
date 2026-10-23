@@ -1,7 +1,7 @@
 # Runner inventory (BiloxiStudios org)
 
 **Scope:** GitHub org `BiloxiStudios` (enterprise `grae` has 0 self-hosted runners).
-**Updated:** 2026-08-22 by Boss (SBAI-7498). Re-list: `scripts/list-runners.sh`
+**Updated:** 2026-08-22 by Boss (SBAI-7498). Host column rechecked 2026-10-22 (SBAI-14424) against read-only `pct list` on pve1, pve2, and pve3. Re-list: `scripts/list-runners.sh`
 
 Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still match):
 
@@ -46,6 +46,8 @@ they are physically on pve3 (confirmed live via `pvesh`); the original "differen
 entirely" separation claim was wrong on the node, though the workload/CT separation itself still
 holds (both pairs are on pve3, just not on different nodes from each other).
 
+**Recheck (SBAI-14424, 2026-10-22):** `pct list` on pve1, pve2, and pve3 still shows CT164 `proxmox-linux-7` and CT163 `proxmox-linux-8` running on pve3. CT165 `actions-linux-mm1` is running on pve3 as well. pve2 has no VMID 163–168 and no container named `proxmox-linux-*` or `actions-linux-*`.
+
 ## Hostname collisions / stale — RESOLVED 2026-08-22 (SBAI-7498)
 
 Proxmox container **name** field was literally duplicated between vm1 and vm3 (`pvesh` showed two
@@ -59,7 +61,7 @@ GH runners (GH id 32/33) and were **not** touched.
 | vm1 CT157 | actions-linux-6 | **retired-ct157** | **SUPERSEDED — DO NOT DESTROY. See the SBAI-10938 correction below.** True as of 2026-08-22: former repo-scoped runner `proxmox-linux-6` (`BiloxiStudios/studiobrain-cloud`) had migrated away; no `.runner` file, no systemd unit, no process. Since re-purposed as a **live** BrainMon runner — the `retired-ct157` name is now misleading |
 | vm3 CT158 | actions-linux-5 | *(unchanged)* | Real GH id 32, org roster, `build-e2e-linux` |
 | vm3 CT159 | actions-linux-6 | *(unchanged)* | Real GH id 33, org roster, `build-e2e-linux` |
-| pve2 CT165 | actions-linux-mm1 | *(unchanged)* | **repo-scoped** `studiobrain-model-manager` (not org list) — out of scope for this pass |
+| pve3 CT165 | actions-linux-mm1 | *(unchanged)* | **repo-scoped** `studiobrain-model-manager` (not org list) — name unchanged in the SBAI-7498 pass. Host corrected by SBAI-14424 (2026-10-22 `pct list`): pve3, not pve2. |
 
 **Correction (SBAI-10938 audit, 2026-09-19): CT157 is LIVE — do not destroy it.** The CT157 row
 above was accurate when written on 2026-08-22, but the container was re-purposed for BrainMon CI
