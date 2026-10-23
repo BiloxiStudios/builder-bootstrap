@@ -4,7 +4,15 @@
 # runner CTs have IPv6 enabled with only link-local addresses (no global route).
 # This causes `npm ci` to hang for minutes on "resolving registry.npmjs.org".
 #
-# Affected CTs: 145, 146, 147, 148 (proxmox-linux-1/2/3/4 on pve1)
+# Affected CTs (host: CT ids):
+#   pve1 (10.15.0.30): 145 146 147 148 — proxmox-linux-1/2/3/4
+#   pve3 (10.15.0.10): 158 159 163 164 165 166 167 168 — actions-linux-5/6,
+#     proxmox-linux-7/8, studiobrain-model-manager mm1-mm4
+#
+# NOTE (SBAI-14451, verified live 2026-10-22): the IPv6 disable was already
+# applied out-of-band to every pve3 CT above (disable_ipv6=1, sysctl file
+# present, no AAAA resolve lines, curl4=200). The pve3 entries keep the fix
+# repeatable for rebuilds and new CTs; re-running on a fixed CT is idempotent.
 # Run from BRAINZ or any host with SSH access to Proxmox nodes.
 #
 # Usage: ./disable-ipv6-runners.sh [--dry-run]
@@ -12,15 +20,17 @@ set -euo pipefail
 
 DRY_RUN="${1:-}"
 if [[ "$DRY_RUN" == "--dry-run" ]]; then
-  echo "[DRY-RUN] Would disable IPv6 on CTs 145-148"
+  echo "[DRY-RUN] Would disable IPv6 on runner CTs (pve1 + pve3)"
   DRY_RUN_CMD="echo [DRY-RUN]"
 else
   DRY_RUN_CMD=""
 fi
 
-# CTs to fix (pve1 runner CTs with build-cf-worker label)
-CT_IDS="145 146 147 148"
-PVE_HOST="10.15.0.30"
+# CTs to fix, as "host:ctids" pairs (space-separated ct ids per host)
+CT_GROUPS=(
+  "10.15.0.30:145 146 147 148"
+  "10.15.0.10:158 159 163 164 165 166 167 168"
+)
 
 # Guest-side script to disable IPv6 (pushed via pct)
 GUEST_SCRIPT=$(cat <<'GUEST_EOF'
@@ -51,8 +61,11 @@ fi
 GUEST_EOF
 )
 
-for ct_id in $CT_IDS; do
-  echo "=== CT${ct_id} ==="
+for group in "${CT_GROUPS[@]}"; do
+  PVE_HOST="${group%%:*}"
+  CT_IDS="${group#*:}"
+  for ct_id in $CT_IDS; do
+  echo "=== CT${ct_id} @ ${PVE_HOST} ==="
 
   # Pre-check: verify CT is running
   if ! ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 root@"$PVE_HOST" \
@@ -85,6 +98,7 @@ for ct_id in $CT_IDS; do
   fi
 
   echo ""
+  done
 done
 
 if [[ -z "$DRY_RUN_CMD" ]]; then
