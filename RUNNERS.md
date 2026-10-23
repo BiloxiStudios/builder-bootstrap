@@ -20,8 +20,9 @@ Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still m
 | GH id | Name | Status | Exclusive | Host / notes |
 |------:|------|--------|-----------|--------------|
 | 36 | bx-w11-build02 | online idle | **build-desktop-windows** + rust-msvc + **build-mm-win** | HYDRA 10.15.1.117 — preferred desktop; 24G/8c, C: 256G / **159G free** (VHDX 256G on HYDRA) |
-| 37 | bl-w11-build01 | online idle | **build-desktop-windows** + rust-msvc + **build-mm-win** | 10.15.1.137 standby; 16G/8c, C: 256G / **165G free** (VHDX 256G on BRANDON-LAP) |
-| 42 | CC-W11-BUILD01 | online idle | **build-desktop-windows** + rust-msvc | Cloudcroft |
+| 55 | bx-hyv22 | **offline** | **build-desktop-windows** + rust-msvc + build-e2e + rust-big | HYV22 host — recorded online 2026-10-15 (SBAI-14396 run 38670478665) but offline in the 2026-10-23 re-list |
+| 37 | bl-w11-build01 | **offline (absent from live org list 2026-10-23)** | — | Was 10.15.1.137 standby; no longer registered to the org |
+| 42 | CC-W11-BUILD01 | **offline (absent 2026-10-23)**; live cc-w11-build01 is GH id 56, online, labels `rust-msvc,cc` only — **not** in `build-desktop-windows` | Cloudcroft |
 | 41 | DOMOVOI | online idle | **build-test-windows** | Physical 10.15.1.129, 8GB — not desktop |
 | 39 | WIN-G10JLRFN20E | **online** (restarted 2026-08-18; interactive task) | **build-e2e** | Host 10.15.0.78; interactive scheduled task (not a Windows service) |
 | 43 | proxmox-linux-7 | online | **build-desktop-linux** | pve3 CT164 (SBAI-10516 audit, 2026-09-13: physically on pve3, not pve2) |
