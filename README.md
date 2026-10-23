@@ -100,6 +100,14 @@ common/TOOLCHAIN.md              # version pins / rationale
 
 Keep NAS and GitHub in sync when editing.
 
+## Shared checkout convention (host)
+
+The shared host checkout at `/srv/AI_Stuff/infracrew/builder-bootstrap` is a read path of record (cloud docs and tickets cite its `RUNNERS.md` as the live runner inventory), but it can temporarily sit on an in-flight worker branch or lag `origin/main`.
+
+- **Authoritative reads**: use `git show origin/main:RUNNERS.md` (or the file on GitHub) — not the working tree — when you need the merged state of record.
+- **After a worker PR lands**, fast-forward the shared tree: `git fetch origin && git checkout main && git merge --ff-only origin/main`.
+- **Workers**: cut branches from a dedicated worktree, not the shared tree — e.g. `git worktree add /srv/AI_Stuff/brainmon/worktrees/<slug> -b worker/<ticket> origin/main` — so the shared tree never moves off `main`. Avoid `/tmp` for registered worktrees (reboot clears it and dangles the registration).
+
 ## Related
 
 - Skill: `WindowsBuildDeploy` (Windows deep runbook)
