@@ -32,6 +32,7 @@ Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still m
 | 22 | proxmox-linux-2 | online | **build-cf-worker** | pve1 CT146 |
 | 23 | proxmox-linux-3 | online | **build-cf-worker** | pve1 CT147 |
 | 24 | proxmox-linux-4 | online | **build-cf-worker** | pve1 CT148 (android label) |
+| 27 | proxmox-macos-1 | **Listener not running** (LaunchAgent `actions.runner.BiloxiStudios.proxmox-macos-1.plist` present, dated Jul 20, but not loaded; checked 2026-10-23T02:28Z, re-verified 2026-10-23T07:27Z; GH-side status unverified — org API needs admin PAT) | none — id 27 absent from `apply-dedicated-labels.py` PLAN; live label set unverified (SBAI-14577) | pve2 VM 220 (macos-sonoma, `10.15.1.142`, MAC `BC:24:11:81:E3:6F`) — `.runner`: agentId 27, agentName proxmox-macos-1, org registration `github.com/BiloxiStudios`; row added 2026-10-23, date-anchored per SBAI-14494 staleness rule (SBAI-14589). VM also hosts repo-scoped `proxmox-macos-pve2-mm` (agentId 22, `studiobrain-model-manager`, Listener running from `~/actions-runner-mm/` since 30Sep26) — a different runner; do not confuse its live Listener with this one |
 | 28 | proxmox-macos-2 | online idle | **build-macos** | pve macOS |
 | 34 | cc-linux-1 | **online** (disk-full crashloop 2026-08-18; pruned + restarted; 899M free — still tight) | **build-cf-worker** | Cloudcroft ESXi esx1 `10.44.0.106` |
 | 45 | mm-linux-1 | **online** | **build-mm** + avx2 + Linux,X64 | pve3 CT166 `10.15.1.130` 16c/32G/16Gswap/200G 197G free — MM Linux cargo |
