@@ -2,6 +2,7 @@
 
 **Scope:** GitHub org `BiloxiStudios` (enterprise `grae` has 0 self-hosted runners).
 **Updated:** 2026-08-22 by Boss (SBAI-7498). Re-list: `scripts/list-runners.sh`
+**Partial edit (SBAI-14475, 2026-10-23):** the GH id 37 status cell below now cites a no-reply ping, not a GitHub status — everything else in this file is the 2026-08-22 sweep.
 
 Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still match):
 
@@ -20,7 +21,7 @@ Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still m
 | GH id | Name | Status | Exclusive | Host / notes |
 |------:|------|--------|-----------|--------------|
 | 36 | bx-w11-build02 | online idle | **build-desktop-windows** + rust-msvc + **build-mm-win** | HYDRA 10.15.1.117 — preferred desktop; 24G/8c, C: 256G / **159G free** (VHDX 256G on HYDRA) |
-| 37 | bl-w11-build01 | online idle | **build-desktop-windows** + rust-msvc + **build-mm-win** | 10.15.1.137 standby; 16G/8c, C: 256G / **165G free** (VHDX 256G on BRANDON-LAP) |
+| 37 | bl-w11-build01 | **no ping** 2026-10-23 (not a GitHub read) | **build-desktop-windows** + rust-msvc + **build-mm-win** | 10.15.1.137 Brandon laptop; 16G/8c, C: 256G / **165G free** (VHDX 256G on BRANDON-LAP). Ping from BRAINZ: no reply at 2026-10-23T01:04Z and 2026-10-23T02:23Z (1/1 packet loss each). Status was "online idle" in the 2026-08-22 sweep; org runners API 403 (needs admin:org) so no live re-list — SBAI-14475. |
 | 42 | CC-W11-BUILD01 | online idle | **build-desktop-windows** + rust-msvc | Cloudcroft |
 | 41 | DOMOVOI | online idle | **build-test-windows** | Physical 10.15.1.129, 8GB — not desktop |
 | 39 | WIN-G10JLRFN20E | **online** (restarted 2026-08-18; interactive task) | **build-e2e** | Host 10.15.0.78; interactive scheduled task (not a Windows service) |
