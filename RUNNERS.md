@@ -84,6 +84,36 @@ this correction is deliberately doc-only and does not depend on that decision. N
 "neither stale CT was ever in the org roster" line above still holds as a statement about the
 **org** roster — CT157 is *repo*-scoped, so it was never expected there.
 
+## Repo-scoped macOS runner on pve2 VM 220 (SBAI-14643, 2026-10-23)
+
+Not an org runner. Registered only on `BiloxiStudios/studiobrain-model-manager`,
+so `scripts/list-runners.sh` (org roster) will not show it. Added next to the
+other repo-scoped asides (CT154, CT157, CT165) so a fleet audit does not miss it.
+
+| Repo GH id | Name | Status | Labels (live 2026-10-23) | Host / install |
+|-----------:|------|--------|--------------------------|----------------|
+| 22 | proxmox-macos-pve2-mm | **online**, busy false | `self-hosted`, `macOS`, `X64`, `proxmox`, `sonoma`, `sequoia`, `pve2` | pve2 VM 220 (macos-sonoma, `10.15.1.142`), install `~/actions-runner-mm/` |
+
+Live registration checked 2026-10-23 with
+`gh api /repos/BiloxiStudios/studiobrain-model-manager/actions/runners`
+(not the org endpoint): id **22**, name `proxmox-macos-pve2-mm`, os macOS,
+status online, busy false, labels as in the table. VM id, IP, and install
+path are the read-only ssh observation recorded on SBAI-14643 at
+2026-10-23T07:27Z (`~/actions-runner-mm/.runner` agentId 22, agentName
+`proxmox-macos-pve2-mm`, gitHubUrl
+`https://github.com/BiloxiStudios/studiobrain-model-manager`; `Runner.Listener`
+PID 299, up since 30Sep26, `bin/Runner.Listener run --startuptype service`).
+This note did not SSH the guest again.
+
+**Ids collide only on the number.** Repo-scoped agentId 22 is not org runner
+id 22 (`proxmox-linux-2`, pve1 CT146). GitHub ids are per registration scope.
+
+**Listeners on VM 220 are two runners.** The same VM hosts org runner
+`proxmox-macos-1` (agentId 27). SBAI-14589 records that the org LaunchAgent
+was present but not loaded, while this repo-scoped Listener was the one
+running from `~/actions-runner-mm/`. Do not treat that live Listener as
+`proxmox-macos-1`.
+
 ## Scripts
 
 | Script | Purpose |
