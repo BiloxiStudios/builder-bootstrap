@@ -1,7 +1,7 @@
 # Runner inventory (BiloxiStudios org)
 
 **Scope:** GitHub org `BiloxiStudios` (enterprise `grae` has 0 self-hosted runners).
-**Updated:** 2026-08-22 by Boss (SBAI-7498). Re-list: `scripts/list-runners.sh`
+**Updated:** 2026-10-23 (SBAI-14873: GH id 39 marked deregistered per the 2026-09-11 admin org list, SBAI-10500; desktop-pool rows refreshed earlier that day by SBAI-14655 / PR #17). Re-list: `scripts/list-runners.sh`
 
 Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still match):
 
@@ -24,7 +24,7 @@ Exclusive labels added 2026-08-18 (old labels kept so existing `runs-on` still m
 | 37 | bl-w11-build01 | **offline (absent from live org list 2026-10-23)** | — | Was 10.15.1.137 standby; no longer registered to the org |
 | 42 | CC-W11-BUILD01 | **offline (absent 2026-10-23)**; live cc-w11-build01 is GH id 56, online, labels `rust-msvc,cc` only — **not** in `build-desktop-windows` | Cloudcroft |
 | 41 | DOMOVOI | online idle | **build-test-windows** | Physical 10.15.1.129, 8GB — not desktop |
-| 39 | WIN-G10JLRFN20E | **online** (restarted 2026-08-18; interactive task) | **build-e2e** | Host 10.15.0.78; interactive scheduled task (not a Windows service) |
+| 39 | WIN-G10JLRFN20E | **deregistered** (admin org list 2026-09-11 ~17:35Z, SBAI-10500; not merely offline) | — (was `build-e2e`) | Host 10.15.0.78; the "online, interactive scheduled task" reading predated the deregistration. No admin re-list since 2026-09-11 has shown it re-registered — re-verify with `scripts/list-runners.sh` before routing any build-e2e work. Zero runners currently carry both `e2e` and `build-e2e` (bx-hyv22 id 55 carries `build-e2e` but not `e2e`, and was offline in the 2026-10-23 re-list) |
 | 43 | proxmox-linux-7 | online | **build-desktop-linux** | pve3 CT164 (SBAI-10516 audit, 2026-09-13: physically on pve3, not pve2) |
 | 44 | proxmox-linux-8 | online | **build-desktop-linux** | pve3 CT163 (SBAI-10516 audit, 2026-09-13: physically on pve3, not pve2) |
 | 32 | actions-linux-5 | online | **build-e2e-linux** | pve3(vm3) CT158 (guest `free`/`swapon --show`/`/proc/swaps` re-verified 2026-08-22: Swap=**16G active**, 1.8M used; 16G zvol `vm-ssd/swap-ct158` is host backing) |
