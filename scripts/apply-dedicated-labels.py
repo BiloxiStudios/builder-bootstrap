@@ -28,7 +28,7 @@ PLAN: dict[int, list[str]] = {
     22: ["build-cf-worker"],  # proxmox-linux-2
     23: ["build-cf-worker"],  # proxmox-linux-3
     24: ["build-cf-worker"],  # proxmox-linux-4
-    28: ["build-macos"],  # proxmox-macos-2
+    28: ["build-macos"],  # proxmox-macos-2 — pve3 VM 222 (id 27 = proxmox-macos-1, pve2 VM 220; not in this PLAN)
     34: ["build-cf-worker"],  # cc-linux-1
     45: ["build-mm", "mm"],  # mm-linux-1 — keep Linux,X64,avx2
 }
